@@ -21,12 +21,13 @@ All actions are conducted on the HDP2 Nagios server
 
 ####Alert Translations
 
-Oozie Status   |  Script Exit Code |  Nagios Level
-FAILED              2                   CRITICAL
-KILLED              1                   WARNING
-SUSPENDED           1                   WARNING
-SUCCEEDED           0                   OK
-<all others>        0                   OK
+|Oozie Status   |  Script Exit Code |  Nagios Level |
+| ------------- |:-----------------:|--------------:|
+|FAILED         |     2             |    CRITICAL   |
+|KILLED         |     1             |    WARNING    |
+|SUSPENDED      |     1             |    WARNING    |
+|SUCCEEDED      |     0             |    OK         |
+|<all others>   |     0             |    OK         |
 
 ###TODO
 1. Filter workflows based on x minutes in the past
