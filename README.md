@@ -2,6 +2,8 @@
 
 This plugin will identify and alert the status of Oozie workflows.
 
+(/images/ambari-oozie.png "Ambari Oozie Nagios Screenshot")
+
 ###Assumptions
 Oozie has been configured with the same timezone as the host server.  This can be achieved with the oozie-site.xml parameter of: oozie.processing.timezone
 Example for Eastern Standard Time:
@@ -25,6 +27,6 @@ SUSPENDED           1                   WARNING
 SUCCEEDED           0                   OK
 <all others>        0                   OK
 
-##TODO
+###TODO
 1. Filter workflows based on x minutes in the past
 2. Add option to pull x number of workflows.  Currently, it pulls the default of 50.
