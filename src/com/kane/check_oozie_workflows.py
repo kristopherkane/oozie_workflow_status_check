@@ -22,6 +22,8 @@ failed_count = 0
 suspended_count = 0
 killed_count = 0
 succeeded_count = 0
+prep_count = 0
+running_count = 0
 workflows = []
 
 try:
@@ -38,7 +40,7 @@ for job in json_object[u'workflows']:
     row = [job[u'id'], job[u'appName'], job[u'status'], job[u'endTime']]
     workflows.append(row)
 
-#iterate through the workflows and find failed jobs
+#iterate through the workflows and get status
 for workflow in workflows:
     if workflow[2] == "FAILED":
         failed_count += 1
@@ -51,25 +53,32 @@ for workflow in workflows:
 
     elif workflow[2] == "SUCCEEDED":
         succeeded_count += 1
+
+    elif wofklow[2] == "PREP":
+        prep_count += 1
+
+    elif workflow[2] == "RUNNING":
+        running_count += 1
+
 total = failed_count + suspended_count + killed_count + succeeded_count
 
 #Return exit codes based on counts - order by most severe descending
-print "FAILED: %d KILLED: %d SUSPENDED: %d SUCCEEDED: %d Total: %d" % (failed_count,
+print "FAILED: %d KILLED: %d SUSPENDED: %d SUCCEEDED: %d RUNNING: %d PREP: %d Total: %d" % (
+                                                                       failed_count,
                                                                        killed_count,
                                                                        suspended_count,
                                                                        succeeded_count,
+                                                                       running_count,
+                                                                       prep_count,
                                                                        total)
+#Generate Nagios CRITICAL
 if failed_count > 0:
     sys.exit(2)
 
-elif killed_count > 0:
+#Generate Nagios WARNING
+elif killed_count > 0 or suspended_count > 0:
     sys.exit(1)
 
-elif suspended_count > 0:
-    sys.exit(1)
-
-elif succeeded_count > 0:
-    sys.exit(0)
-
+#Generate Nagios OK
 else:
     sys.exit(0)
