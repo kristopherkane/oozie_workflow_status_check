@@ -3,6 +3,7 @@
 This plugin will identify and alert the status of Oozie workflows.
 
 ![Ambari Oozie Nagios Screenshot](/images/ambari-oozie.png "Ambari Oozie Nagios Screenshot")
+![Nagios Screenshot](/images/nagios-oozie.png "Nagios Oozie Screenshot")
 
 ###Assumptions
 Oozie has been configured with the same timezone as the host server.  This can be achieved with the oozie-site.xml parameter of: oozie.processing.timezone
