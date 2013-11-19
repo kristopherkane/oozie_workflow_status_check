@@ -18,14 +18,10 @@ except:
 
 uri = "http://" + host + ":" + port + "/oozie/v1/jobs?jobType=wf&timezone=%s" % (tz)
 
-bad_status = ["FAILED", "SUSPENDED", "KILLED"]
-good_status = ["SUCCEEDED"]
-
 failed_count = 0
 suspended_count = 0
 killed_count = 0
 succeeded_count = 0
-
 workflows = []
 
 try:
@@ -77,14 +73,3 @@ elif succeeded_count > 0:
 
 else:
     sys.exit(0)
-
-    '''
-    print job[u'status'], job[u'endTime']
-    dtg = job[u'endTime'].replace(",", "")
-    name = job[u'appName']
-    mytime = time.strptime(dtg, "%a %d %b %Y %X %Z")
-    newtime = time.strftime("%B", mytime)
-    print newtime
-    print name
-    print job[u'id']
-    '''
