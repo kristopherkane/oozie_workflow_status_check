@@ -10,6 +10,8 @@ Oozie has been configured with the same timezone as the host server.  This can b
 Example for Eastern Standard Time:
 >oozie.processing.timezone = GMT-0500
 
+This also assumes Oozie security is not on.
+
 ###Installation
 All actions are conducted on the HDP2 Nagios server
 
@@ -33,3 +35,4 @@ All actions are conducted on the HDP2 Nagios server
 ###TODO
 1. Filter workflows based on x minutes in the past
 2. Add option to pull x number of workflows.  Currently, it pulls the default of 50.
+3. Integrate with Oozie security
