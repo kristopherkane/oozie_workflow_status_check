@@ -1,0 +1,12 @@
+
+# Oozie Workflows check
+define service {
+        hostgroup_name          oozie-server
+        use                     hadoop-service
+        service_description     OOZIE::Oozie Workflow status
+        servicegroups           OOZIE
+        check_command           check_oozie_workflows!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>
+        normal_check_interval   1
+        retry_check_interval    1
+        max_check_attempts      3
+}
