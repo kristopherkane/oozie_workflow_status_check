@@ -12,6 +12,7 @@ Example for Eastern Standard Time:
 
 ###Installation
 All actions are conducted on the HDP2 Nagios server
+
 1. Add [check_oozie_workflows.py](/src/com/kane/check_oozie_workflows.py) to the Ambari agent Puppet module files directory at: /var/lib/ambari-agent/puppet/modules/hdp-nagios/files/
 2. Add the additional configuration in [hadoop-services.cfg.erb](/Ambari-Puppet-Configs/hadoop-services.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-services.cfg.erb
 3. Add the additional configuration in [hadoop-commands.cfg.erb](/Ambari-Puppet-Configs/hadoop-commands.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-commands.cfg.erb
@@ -27,7 +28,7 @@ All actions are conducted on the HDP2 Nagios server
 |KILLED         |     1             |    WARNING    |
 |SUSPENDED      |     1             |    WARNING    |
 |SUCCEEDED      |     0             |    OK         |
-|<all others>   |     0             |    OK         |
+|all others     |     0             |    OK         |
 
 ###TODO
 1. Filter workflows based on x minutes in the past
