@@ -9,9 +9,12 @@ from time import gmtime, strftime
 
 #get current timezone - This assumes Oozie has been setup for the system timezone
 tz = strftime("%Z", gmtime())
-
-host = sys.argv[1]
-port = sys.argv[2]
+try:
+    host = sys.argv[1]
+    port = sys.argv[2]
+except:
+    print "Arguments to check script are wrong"
+    sys.exit(2)
 
 uri = "http://" + host + ":" + port + "/oozie/v1/jobs?jobType=wf&timezone=%s" % (tz)
 
@@ -52,26 +55,27 @@ for workflow in workflows:
 
     elif workflow[2] == "SUCCEEDED":
         succeeded_count += 1
+total = failed_count + suspended_count + killed_count + succeeded_count
 
 #Return exit codes based on counts - order by most severe descending
+print "FAILED: %d KILLED: %d SUSPENDED: %d SUCCEEDED: %d Total: %d" % (failed_count,
+                                                                       killed_count,
+                                                                       suspended_count,
+                                                                       succeeded_count,
+                                                                       total)
 if failed_count > 0:
-    print "FAILED: %d Oozie workflow(s)" % (failed_count)
     sys.exit(2)
 
 elif killed_count > 0:
-    print "KILLED: %d Oozie workflow(s)" % (killed_count)
     sys.exit(1)
 
 elif suspended_count > 0:
-    print "SUSPENDED: %d Oozie workflow(s)" % (suspended_count)
     sys.exit(1)
 
 elif succeeded_count > 0:
-    print "OK: %d Oozie workflows succeeded" % (succeeded_count)
     sys.exit(0)
 
 else:
-    print "OK: No workflows identified"
     sys.exit(0)
 
     '''
