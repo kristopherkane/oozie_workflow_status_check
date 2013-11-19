@@ -1,1 +1,5 @@
-This file was created by IntelliJ IDEA 12.1.6 for binding GitHub repository
+Nagios - Oozie Workflow Status
+
+This plugin will identify and alert the status of Oozie workflows.  The Nagios alert level is as follows:
+
+Oozie Status   |  Script Exit Code |  Nagios Level

@@ -1,5 +1,7 @@
 #Oozie Workflow Status Checker for the Hortonworks Data Platform 2 Nagios deployment
 #This is a cut out of the additions to /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-commands.cfg.erb on the Nagios Host
+#Place this below the definition of the other Oozie check
+#DO NOT replace the file with this one
 define command{
         command_name    check_oozie_workflows
         command_line    python $USER1$/check_oozie_workflows.py $HOSTADDRESS$ $ARG1$
