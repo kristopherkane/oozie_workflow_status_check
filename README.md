@@ -21,7 +21,7 @@ All actions are conducted on the HDP2 Nagios server
 2. Add the additional configuration within the existing Oozie if conditional in file [hadoop-services.cfg.erb](/Ambari-Puppet-Configs/hadoop-services.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-services.cfg.erb
 
 Example for hadoop-services.cfg.erb
-```puppet
+```bash
 <%if scope.function_hdp_nagios_members_exist('oozie-server')-%>
 # Oozie check
 define service {
