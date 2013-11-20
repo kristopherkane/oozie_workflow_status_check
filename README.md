@@ -15,8 +15,43 @@ This also assumes Oozie security is not on.
 ###Installation
 All actions are conducted on the HDP2 Nagios server
 
+*Read Carefully -- The only file that should be added is the check_oozie_workflows.py.  The other files are configurations that should be added to the existing HDP2 Puppet files.
+
 1. Add [check_oozie_workflows.py](/src/com/kane/check_oozie_workflows.py) to the Ambari agent Puppet module files directory at: /var/lib/ambari-agent/puppet/modules/hdp-nagios/files/
-2. Add the additional configuration in [hadoop-services.cfg.erb](/Ambari-Puppet-Configs/hadoop-services.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-services.cfg.erb
+2. Add the additional configuration within the existing Oozie if conditional in file [hadoop-services.cfg.erb](/Ambari-Puppet-Configs/hadoop-services.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-services.cfg.erb
+Example for hadoop-services.cfg.erb
+```
+<%if scope.function_hdp_nagios_members_exist('oozie-server')-%>
+# Oozie check
+define service {
+        hostgroup_name          oozie-server
+        use                     hadoop-service
+        service_description     OOZIE::Oozie Server status
+        servicegroups           OOZIE
+        <%if scope.function_hdp_template_var("::hdp::params::security_enabled")-%>
+        check_command           check_oozie_status!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>!<%=scope.function_hdp_template_var("java64_home")%>!true!<%=scope.function_hdp_templat
+e_var("nagios_keytab_path")%>!<%=scope.function_hdp_template_var("nagios_principal_name")%>!<%=scope.function_hdp_template_var("kinit_path_local")%>
+        <%else-%>
+        check_command           check_oozie_status!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>!<%=scope.function_hdp_template_var("java64_home")%>!false
+        <%end-%>
+        normal_check_interval   1
+        retry_check_interval    1
+        max_check_attempts      3
+}
+
+# Oozie Workflows check
+define service {
+        hostgroup_name          oozie-server
+        use                     hadoop-service
+        service_description     OOZIE::Oozie Workflow status
+        servicegroups           OOZIE
+        check_command           check_oozie_workflows!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>
+        normal_check_interval   1
+        retry_check_interval    1
+        max_check_attempts      3
+}
+<%end-%>
+```
 3. Add the additional configuration in [hadoop-commands.cfg.erb](/Ambari-Puppet-Configs/hadoop-commands.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-commands.cfg.erb
 4. Add the additional configuration in [config.pp](/Ambari-Puppet-Configs/config.pp) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/manifests/server/config.pp
 5. Restart Nagios via Ambari
