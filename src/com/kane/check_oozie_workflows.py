@@ -70,7 +70,7 @@ for workflow in workflows:
     elif workflow[2] == "SUCCEEDED":
         succeeded_count += 1
 
-    elif wofklow[2] == "PREP":
+    elif workflow[2] == "PREP":
         prep_count += 1
 
     elif workflow[2] == "RUNNING":
