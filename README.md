@@ -15,7 +15,7 @@ This also assumes Oozie security is not on.
 ###Installation
 All actions are conducted on the HDP2 Nagios server
 
-*Read Carefully -- The only file that should be added is the check_oozie_workflows.py.  The other files are configurations that should be added to the existing HDP2 Puppet files.
+**Read Carefully** -- The only file that should be added is the check_oozie_workflows.py.  The other files are configurations that should be added to the existing HDP2 Puppet files.
 
 1. Add [check_oozie_workflows.py](/src/com/kane/check_oozie_workflows.py) to the Ambari agent Puppet module files directory at: /var/lib/ambari-agent/puppet/modules/hdp-nagios/files/
 2. Add the additional configuration within the existing Oozie if conditional in file [hadoop-services.cfg.erb](/Ambari-Puppet-Configs/hadoop-services.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-services.cfg.erb
