@@ -83,4 +83,4 @@ define service {
 ###TODO
 1. Filter workflows based on x minutes in the past
 2. Add option to pull x number of workflows.  Currently, it pulls the default of 50.
-3. ~~Integrate with Oozie security~~
+3. ~~Integrate with Kerberos~~
