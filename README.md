@@ -20,6 +20,7 @@ Example for Eastern Standard Time:
 
 ###Tested
 HDP 1.3 (Kerberos)
+
 HDP 2.0
 
 
