@@ -18,6 +18,11 @@ Oozie has been configured with the same timezone as the host server.  This can b
 Example for Eastern Standard Time:
 >oozie.processing.timezone = GMT-0500
 
+###Tested
+HDP 1.3 (Kerberos)
+HDP 2.0
+
+
 
 ###Installation
 All actions are conducted on the HDP2 Nagios server
