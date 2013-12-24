@@ -4,5 +4,5 @@
 #DO NOT replace the file with this one
 define command{
         command_name    check_oozie_workflows
-        command_line    python $USER1$/check_oozie_workflows.py $HOSTADDRESS$ $ARG1$
-        }
+        command_line    $USER1$/check_oozie_workflows.sh $HOSTADDRESS$ $ARG1$ $ARG2$ $ARG3$ $ARG4$ $ARG5$ $ARG6$ $ARG7$
+       }

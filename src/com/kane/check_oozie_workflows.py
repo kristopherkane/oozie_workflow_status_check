@@ -15,20 +15,29 @@
 #   limitations under the License.
 ################################################
 
+"""
+This requires python-kerberos (CentOS Base) and python-urllib2_kerberos (EPEL)
+root@box>yum install python-kerberos python-urllib2_kerberos
+"""
+
 import sys
 import urllib
 import json
 import time
 import datetime
 from time import gmtime, strftime
+import urllib2_kerberos
+import urllib2
 
 #get current timezone - This assumes Oozie has been setup for the system timezone
 tz = strftime("%Z", gmtime())
 try:
     host = sys.argv[1]
     port = sys.argv[2]
+    kinit_truth = sys.argv[3]
 except:
     print "Arguments to check script are wrong"
+    print "Expecting [1] host [2] port [3] kerberos ruth (true|false)"
     sys.exit(2)
 
 uri = "http://" + host + ":" + port + "/oozie/v1/jobs?jobType=wf&timezone=%s" % (tz)
@@ -41,14 +50,38 @@ prep_count = 0
 running_count = 0
 workflows = []
 
-try:
-    raw_json = urllib.urlopen(uri)
-except:
-    print "Error connecting to the Oozie server"
-    sys.exit(2)
+#If Kerberos, use urllib2/urllib2_kerberos, if not, use urllib
 
-#Create a JSON object
-json_object = json.load(raw_json)
+if kinit_truth == "true":
+    try:
+        opener = urllib2.build_opener()
+        opener.add_handler(urllib2_kerberos.HTTPKerberosAuthHandler())
+        resp = opener.open(uri)
+        a = resp.read()
+
+        #Create a JSON object
+    except:
+        print "Error connecting to the Oozie server with kerberos"
+        sys.exit(2)
+    #Create a JSON object
+    try:
+        json_object = json.loads(a)
+    except:
+        print "Error parsing the JSON from Oozie"
+        sys.exit(2)
+else:
+    try:
+        raw_json = urllib.urlopen(uri)
+    except:
+        print "Error connecting to the Oozie server"
+        sys.exit(2)
+
+    #Create a JSON object
+    try:
+        json_object = json.load(raw_json)
+    except:
+        print "Error parsing the JSON from Oozie"
+        sys.exit(2)
 
 #iterate through the json and pull out the workflows
 for job in json_object[u'workflows']:

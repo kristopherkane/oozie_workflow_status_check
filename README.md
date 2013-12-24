@@ -5,12 +5,19 @@ This plugin will identify and alert the status of Oozie workflows.
 ![Ambari Oozie Nagios Screenshot](/images/ambari-oozie.png "Ambari Oozie Nagios Screenshot")
 ![Nagios Screenshot](/images/nagios-oozie.png "Nagios Oozie Screenshot")
 
+###News
+This HDP plugin now works with Kerberos enabled security!  It inherits much of the same properties as the built-in Oozie status check and so needs no new Ambari modifications.
+
+###Dependencies
+With the Kerberos integration, the Python source will need two new packages installed on the Nagios server.
+python-kerberos (CentOS Base)
+python-urllib2_kerberos (EPEL)
+
 ###Assumptions
 Oozie has been configured with the same timezone as the host server.  This can be achieved with the oozie-site.xml parameter of: oozie.processing.timezone
 Example for Eastern Standard Time:
 >oozie.processing.timezone = GMT-0500
 
-This also assumes Oozie security is not on.
 
 ###Installation
 All actions are conducted on the HDP2 Nagios server
@@ -39,13 +46,18 @@ e_var("nagios_keytab_path")%>!<%=scope.function_hdp_template_var("nagios_princip
         retry_check_interval    1
         max_check_attempts      3
 }
-# Oozie Workflows check
+# Oozie workflow check
 define service {
         hostgroup_name          oozie-server
         use                     hadoop-service
         service_description     OOZIE::Oozie Workflow status
         servicegroups           OOZIE
-        check_command           check_oozie_workflows!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>
+        <%if scope.function_hdp_template_var("::hdp::params::security_enabled")-%>
+        check_command           check_oozie_workflows!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>!<%=scope.function_hdp_template_var("java64_home")%>!true!<%=scope.function_hdp_template_var("nagios_keytab_path")%>!<
+%=scope.function_hdp_template_var("nagios_principal_name")%>!<%=scope.function_hdp_template_var("kinit_path_local")%>
+        <%else-%>
+        check_command           check_oozie_workflows!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>!<%=scope.function_hdp_template_var("java64_home")%>!false
+        <%end-%>
         normal_check_interval   1
         retry_check_interval    1
         max_check_attempts      3
@@ -71,4 +83,4 @@ define service {
 ###TODO
 1. Filter workflows based on x minutes in the past
 2. Add option to pull x number of workflows.  Currently, it pulls the default of 50.
-3. Integrate with Oozie security
+3. ~~Integrate with Oozie security~~
