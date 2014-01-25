@@ -108,7 +108,7 @@ for workflow in workflows:
     elif workflow[2] == "RUNNING":
         running_count += 1
 
-total = failed_count + suspended_count + killed_count + succeeded_count
+total = failed_count + suspended_count + killed_count + succeeded_count + prep_count + running_count
 
 #Return exit codes based on counts - order by most severe descending
 print "FAILED: %d KILLED: %d SUSPENDED: %d SUCCEEDED: %d RUNNING: %d PREP: %d Total: %d" % (
