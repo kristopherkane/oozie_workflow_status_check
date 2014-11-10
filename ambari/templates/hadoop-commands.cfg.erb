@@ -1,0 +1,11 @@
+#Oozie Workflow Status Checker for the Hortonworks Data Platform 2.1 Nagios deployment
+#The following configuration is to be appended to the hadoop-commands.cfg.erb for service NAGIOS
+#DO NOT replace the file with this one
+#
+#
+# Argument '5' represents how many minutes in the past to consider for wf checks
+# Argument '500' represents how many jobs to pull from history
+define command{
+        command_name    check_oozie_workflows
+        command_line    $USER1$/check_oozie_workflows.sh $HOSTADDRESS$ $ARG1$ $ARG2$ $ARG3$ $ARG4$ $ARG5$ $ARG6$ $ARG7$ 5 500
+       }

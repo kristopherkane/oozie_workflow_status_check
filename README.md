@@ -1,4 +1,4 @@
-###Hortonworks Data Platform 2 Nagios Plugin - Oozie Workflow Status
+###Hortonworks Data Platform 2.1 Nagios Plugin - Oozie Workflow Status
 
 This plugin will identify and alert the status of Oozie workflows.
 
@@ -6,32 +6,27 @@ This plugin will identify and alert the status of Oozie workflows.
 ![Nagios Screenshot](/images/nagios-oozie.png "Nagios Oozie Screenshot")
 
 ###News
-This HDP plugin now works with Kerberos enabled security!  It inherits much of the same properties as the built-in Oozie status check and so needs no new Ambari modifications.
+Updated for HDP 2.1 Nagios integration.
+This plugin now only reports on a fixed number of jobs in the past that meet time range criteria specified by the admin.
 
 ###Dependencies
 With the Kerberos integration, the Python source will need two new packages installed on the Nagios server.
 python-kerberos (CentOS Base)
 python-urllib2_kerberos (EPEL)
+For Timezone handling:
+pytz (CentOS Base)
 
-###Assumptions
-Oozie has been configured with the same timezone as the host server.  This can be achieved with the oozie-site.xml parameter of: oozie.processing.timezone
-Example for Eastern Standard Time:
->oozie.processing.timezone = GMT-0500
 
 ###Tested
-HDP 1.3 (Kerberos)
-
-HDP 2.0
-
-
+HDP 2.1
 
 ###Installation
 All actions are conducted on the HDP2 Nagios server
 
-**Read Carefully** -- The only file that should be added is the check_oozie_workflows.py.  The other files are configurations that should be added to the existing HDP2 Puppet files.
+**Read Carefully** -- The only files that should be added are check_oozie_workflows{.py,.sh}.  The other files are configurations that should be added to the existing HDP2 Ambari configuration.
 
-1. Add [check_oozie_workflows.py](/src/com/kane/check_oozie_workflows.py) and [check_oozie_workflows.sh](/src/com/kane/check_oozie_workflows.sh)  to the Ambari agent Puppet module files directory at: /var/lib/ambari-agent/puppet/modules/hdp-nagios/files/
-2. Add the additional configuration within the existing Oozie if conditional in file [hadoop-services.cfg.erb](/Ambari-Puppet-Configs/hadoop-services.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-services.cfg.erb
+1. Add [check_oozie_workflows.py](/src/check_oozie_workflows.py) and [check_oozie_workflows.sh](/src/check_oozie_workflows.sh)  to the Ambari agent Puppet module files directory at: /var/lib/ambari-agent/puppet/modules/hdp-nagios/files/
+2. Add the additional configuration within the existing Oozie if conditional in file [hadoop-services.cfg.erb](/ambari/templates/hadoop-services.cfg.erb) to: /var/lib/ambari-agent/puppet/modules/hdp-nagios/templates/hadoop-services.cfg.erb
 
 Example for hadoop-services.cfg.erb
 ```bash
@@ -52,18 +47,17 @@ e_var("nagios_keytab_path")%>!<%=scope.function_hdp_template_var("nagios_princip
         retry_check_interval    1
         max_check_attempts      3
 }
-# Oozie workflow check
+#Oozie workflow check
 define service {
         hostgroup_name          oozie-server
         use                     hadoop-service
         service_description     OOZIE::Oozie Workflow status
         servicegroups           OOZIE
-        <%if scope.function_hdp_template_var("::hdp::params::security_enabled")-%>
-        check_command           check_oozie_workflows!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>!<%=scope.function_hdp_template_var("java64_home")%>!true!<%=scope.function_hdp_template_var("nagios_keytab_path")%>!<
-%=scope.function_hdp_template_var("nagios_principal_name")%>!<%=scope.function_hdp_template_var("kinit_path_local")%>
-        <%else-%>
-        check_command           check_oozie_workflows!<%=scope.function_hdp_template_var("::hdp::oozie_server_port")%>!<%=scope.function_hdp_template_var("java64_home")%>!false
-        <%end-%>
+        {% if security_enabled %}
+        check_command           check_oozie_workflows!{{ oozie_server_port }}!{{ java64_home }}!true!{{ nagios_keytab_path }}!{{ nagios_principal_name }}!{{ kinit_path_local }}
+        {% else %}
+        check_command           check_oozie_workflows!{{ oozie_server_port }}!{{ java64_home }}!false
+        {% endif %}
         normal_check_interval   1
         retry_check_interval    1
         max_check_attempts      3
@@ -87,6 +81,8 @@ define service {
 |all others     |     0             |    OK         |
 
 ###TODO
-1. Filter workflows based on x minutes in the past
-2. Add option to pull x number of workflows.  Currently, it pulls the default of 50.
+1. ~~Filter workflows based on x minutes in the past~~
+2. ~~Add option to pull x number of workflows.  Currently, it pulls the default of 50.~~
 3. ~~Integrate with Kerberos~~
+4. Filter workflows based on user
+5. Filter workflows based on name matching

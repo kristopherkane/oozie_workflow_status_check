@@ -1,0 +1,20 @@
+#Oozie Workflow Status Checker for the Hortonworks Data Platform 2.1 Nagios deployment
+#This configuration is to be placed in the hadoop-services.cfg.erb file of the service NAGIOS
+#DO NOT replace the file with this one
+
+#Oozie workflow check
+define service {
+        hostgroup_name          oozie-server
+        use                     hadoop-service
+        service_description     OOZIE::Oozie Workflow status
+        servicegroups           OOZIE
+        {% if security_enabled %}
+        check_command           check_oozie_workflows!{{ oozie_server_port }}!{{ java64_home }}!true!{{ nagios_keytab_path }}!{{ nagios_principal_name }}!{{ kinit_path_local }}
+        {% else %}
+        check_command           check_oozie_workflows!{{ oozie_server_port }}!{{ java64_home }}!false
+        {% endif %}
+        normal_check_interval   1
+        retry_check_interval    1
+        max_check_attempts      3
+}
+
