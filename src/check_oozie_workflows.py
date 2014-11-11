@@ -108,8 +108,6 @@ class OozieJobs():
         wf_count = 0
         self.oozie_connection.set_job_uris(offset, self.history_length)
         json_object = self.oozie_connection.connect("jobs")
-        self.oozie_connection.set_job_uris(offset, self.history_length)
-        json_object = self.oozie_connection.connect("jobs")
         for job in json_object[u'workflows']:
             wf_count += 1
             if self.is_within_time_range(self.time_range_minutes, job[u'createdTime']) and (job[u'id'] not in wf_ids):
